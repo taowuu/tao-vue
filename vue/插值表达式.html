@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="https://unpkg.com/vue@next"></script>
+</head>
+<body>
+    <div id="app"></div>
+</body>
+<script>
+    Vue.createApp({
+        data() {
+            return {
+                content: 'hello'
+            }
+        },
+        methods: {
+            handleClick() {
+                this.content = this.content.split('').reverse().join('')
+            }
+        },
+        template: `
+            <div>{{ content }}</div>
+            <button @click="handleClick"> reverse </div>
+        `
+    }).mount('#app')
+</script>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="https://unpkg.com/vue@next"></script>
+</head>
+<body>
+    <div id="app"></div>
+</body>
+<script>
+    Vue.createApp({
+        data() {
+            return {
+                data: 'hello'
+            }
+        },
+        template: `
+            <input v-model="data">
+            <div>{{ data }}</div>
+        `
+    }).mount('#app')
+</script>
+</html>

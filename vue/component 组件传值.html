@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="https://unpkg.com/vue@next"></script>
+</head>
+<body>
+    <div id="app"></div>
+</body>
+<script>
+    const app = Vue.createApp({
+        data() {
+            return {
+                data: 'hello'
+            }
+        },
+        template: `
+            <comp v-bind:data="data" />
+        `
+    })
+
+    app.component('comp', {
+        props: ['data'],
+        template: '<div>{{ data }}</div>'
+    })
+
+    app.mount('#app')
+</script>
+</html>
