@@ -1,7 +1,7 @@
 import { 
     add,
- } from '../index'
-
+} from '../index'
+// 第一个测试
 it('init', () => {
     expect(true).toBe(true)
 })

@@ -19,7 +19,8 @@ npm install --save-dev @babel/preset-typescript
 
 // tsconfig.json
 "types": ["jest"]
-"noImplicitAny": false,
+"noImplicitAny": false
+"lib": ["DOM", "ES6"]
 
 // package.json
 "scripts": {
