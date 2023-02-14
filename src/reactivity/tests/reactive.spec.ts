@@ -1,6 +1,4 @@
-import { 
-  reactive,
-} from '../reactive'
+import { reactive } from '../reactive'
 
 describe('reactive', () => {
   // 核心测试
