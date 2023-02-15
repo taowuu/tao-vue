@@ -8,7 +8,8 @@ class ReactiveEffect {
   run() {
     // 记录当前的依赖
     activeEffect = this
-    this._fn()
+    // 提供 ruuner 的返回值
+    return this._fn()
   }
 }
 
@@ -47,7 +48,10 @@ export function trigger(target, key) {
 let activeEffect
 
 export function effect(fn) {
-  // fn() 在内部立即调用
   const _effect = new ReactiveEffect(fn)
+  // fn() 在内部立即调用
   _effect.run()
+  // 暴露 runner 给外部
+  // 保证 runner 调用者是当前触发的依赖
+  return _effect.run.bind(_effect) 
 }
