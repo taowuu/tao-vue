@@ -1,7 +1,7 @@
 class ReactiveEffect {
   private _fn: any
-   
-  constructor(fn) {
+  // scheduler 提供给外部获取
+  constructor(fn, public scheduler?) {
     this._fn = fn
   }
   
@@ -40,15 +40,23 @@ export function trigger(target, key) {
   let depsMap = targetMap.get(target)
   let dep = depsMap.get(key)
   dep.forEach(effect => {
-    effect.run()
+  // 触发依赖时执行 scheduler
+  if(effect.scheduler) {
+      effect.scheduler()
+    } else {
+      // 第一次执行 fn
+      effect.run()
+    }
   })                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
 }
 
 // 保存当前的依赖
 let activeEffect
 
-export function effect(fn) {
-  const _effect = new ReactiveEffect(fn)
+export function effect(fn, options: any = {}) {
+  // 触发依赖时执行 scheduler
+  const scheduler = options.scheduler
+  const _effect = new ReactiveEffect(fn, scheduler)
   // fn() 在内部立即调用
   _effect.run()
   // 暴露 runner 给外部
