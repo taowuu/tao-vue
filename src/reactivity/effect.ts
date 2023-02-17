@@ -14,6 +14,7 @@ class ReactiveEffect {
 
   stop() {
     // 如何停止？
+    
   }
 }
 
@@ -36,7 +37,9 @@ export function track(target, key) {
     depsMap.set(key, dep)
   }
   // 收集依赖
-  dep.add(activeEffect)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+  dep.add(activeEffect)         
+  // 收集当前 effect 要停止的依赖
+  activeEffect.deps.push(dep)
 }
 
 // 触发依赖
@@ -54,7 +57,7 @@ export function trigger(target, key) {
   })                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
 }
 
-// 保存当前的依赖
+// 保存当前的 effect
 let activeEffect
 
 export function effect(fn, options: any = {}) {
