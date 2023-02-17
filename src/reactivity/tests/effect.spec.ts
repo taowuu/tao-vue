@@ -1,5 +1,5 @@
 import { reactive } from '../reactive'
-import { effect } from '../effect'
+import { effect, stop } from '../effect'
 
 describe('effect', () => {
   it('happy path', () => {
@@ -8,14 +8,17 @@ describe('effect', () => {
     })
 
     let nextAge
+
     // 收集依赖
     effect(() => {
       nextAge = user.age + 1
     })
 
     expect(nextAge).toBe(11)
+
     // 触发依赖
     user.age++
+
     expect(nextAge).toBe(12)
   })
 
@@ -53,10 +56,13 @@ describe('effect', () => {
       },
       { scheduler }
     )
+
     expect(scheduler).not.toHaveBeenCalled()
     expect(dummy).toBe(1)
+
     // should be called on first trigger
     obj.foo++
+    
     expect(scheduler).toHaveBeenCalledTimes(1)
     // // should not run yet
     expect(dummy).toBe(1)
@@ -64,5 +70,23 @@ describe('effect', () => {
     run()
     // // should have run
     expect(dummy).toBe(2)
+  })
+
+  it("stop", () => {
+    let dummy
+    const obj = reactive({ prop: 1 })
+    const runner = effect(() => {
+      dummy = obj.prop
+    })
+    obj.prop = 2
+    expect(dummy).toBe(2)
+    stop(runner)
+    // obj.prop = 3
+    obj.prop++
+    expect(dummy).toBe(2)
+
+    // stopped effect should still be manually callable
+    runner()
+    expect(dummy).toBe(3)
   });
 })

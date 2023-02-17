@@ -11,6 +11,10 @@ class ReactiveEffect {
     // 提供 ruuner 的返回值
     return this._fn()
   }
+
+  stop() {
+    // 如何停止？
+  }
 }
 
 // 新建容器存放所有的 target
@@ -57,9 +61,21 @@ export function effect(fn, options: any = {}) {
   // 触发依赖时执行 scheduler
   const scheduler = options.scheduler
   const _effect = new ReactiveEffect(fn, scheduler)
+  
   // fn() 在内部立即调用
   _effect.run()
+  
+  // 给 runner 挂上所控制的依赖 
+  const runner: any = _effect.run.bind(_effect)
+  runner.effect = _effect
+  
   // 暴露 runner 给外部
   // 保证 runner 调用者是当前触发的依赖
-  return _effect.run.bind(_effect) 
+  return runner
+}
+
+// 停止触发依赖
+export function stop(runner) {
+  // 停止对应的依赖触发
+  runner.effect.stop()
 }
