@@ -1,8 +1,11 @@
 class ReactiveEffect {
   private _fn: any
+  deps = []
+  public scheduler: Function | undefined
   // scheduler 提供给外部获取
-  constructor(fn, public scheduler?) {
+  constructor(fn, scheduler?: Function) {
     this._fn = fn
+    this.scheduler = scheduler
   }
   
   run() {
@@ -14,7 +17,9 @@ class ReactiveEffect {
 
   stop() {
     // 如何停止？
-    
+    this.deps.forEach((dep: any) => {
+      dep.delete(this)
+    })
   }
 }
 
@@ -39,6 +44,8 @@ export function track(target, key) {
   // 收集依赖
   dep.add(activeEffect)         
   // 收集当前 effect 要停止的依赖
+  // deps!!!
+  // console.log(activeEffect.deps)
   activeEffect.deps.push(dep)
 }
 
