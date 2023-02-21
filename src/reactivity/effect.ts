@@ -59,7 +59,7 @@ export function track(target, key) {
     depsMap.set(key, dep)
   }
 
-  // 只是 get 导致 activeEffect undefined
+  // get 导致 activeEffect undefined
   if(!activeEffect) return
 
   // 收集依赖
