@@ -30,7 +30,6 @@ class ReactiveEffect {
       }
       this.active = false
     }
-    
   }
 }
 
