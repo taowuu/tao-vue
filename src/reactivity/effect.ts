@@ -1,6 +1,10 @@
+import { extend } from "../shared"
+
 class ReactiveEffect {
   private _fn: any
   deps = []
+  active =  true
+  onStop?: () => void
   public scheduler: Function | undefined
   // scheduler 提供给外部获取
   constructor(fn, scheduler?: Function) {
@@ -16,11 +20,24 @@ class ReactiveEffect {
   }
 
   stop() {
-    // 如何停止？
-    this.deps.forEach((dep: any) => {
-      dep.delete(this)
-    })
+    // 停止 track 中收集的依赖
+    // 防止多次 stop
+    if(this.active) {
+      cleanupEffect(this)
+      // onStop 回调
+      if(this.onStop) {
+        this.onStop()
+      }
+      this.active = false
+    }
+    
   }
+}
+
+function cleanupEffect(effect) {
+  effect.deps.forEach((dep: any) => {
+    dep.delete(effect)
+  })
 }
 
 // 新建容器存放所有的 target
@@ -41,11 +58,13 @@ export function track(target, key) {
     dep = new Set()
     depsMap.set(key, dep)
   }
+
+  // 只是 get 导致 activeEffect undefined
+  if(!activeEffect) return
+
   // 收集依赖
   dep.add(activeEffect)         
   // 收集当前 effect 要停止的依赖
-  // deps!!!
-  // console.log(activeEffect.deps)
   activeEffect.deps.push(dep)
 }
 
@@ -71,6 +90,11 @@ export function effect(fn, options: any = {}) {
   // 触发依赖时执行 scheduler
   const scheduler = options.scheduler
   const _effect = new ReactiveEffect(fn, scheduler)
+  
+  // _effect.onStop = options.onStop
+  // 优雅赋值多个 option
+  // Object.assign(_effect, options)
+  extend(_effect, options)
   
   // fn() 在内部立即调用
   _effect.run()
